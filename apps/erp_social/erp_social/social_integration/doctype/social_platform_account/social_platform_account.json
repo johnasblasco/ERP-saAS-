@@ -1,0 +1,153 @@
+{
+ "actions": [],
+ "autoname": "field:account_name",
+ "creation": "2026-10-06 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "account_name",
+  "platform",
+  "external_id",
+  "column_break_main",
+  "enabled",
+  "lead_owner",
+  "utm_source",
+  "credentials_section",
+  "app_id",
+  "app_secret",
+  "column_break_credentials",
+  "verify_token",
+  "access_token",
+  "graph_api_version"
+ ],
+ "fields": [
+  {
+   "fieldname": "account_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Account Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "platform",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Platform",
+   "options": "Facebook\nInstagram\nTikTok",
+   "reqd": 1
+  },
+  {
+   "description": "Facebook/Instagram: the Page ID that owns the lead forms. TikTok: the advertiser ID.",
+   "fieldname": "external_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Page / Advertiser ID",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "description": "New Leads from this account are assigned to this user.",
+   "fieldname": "lead_owner",
+   "fieldtype": "Link",
+   "label": "Lead Owner",
+   "options": "User"
+  },
+  {
+   "fieldname": "utm_source",
+   "fieldtype": "Link",
+   "label": "UTM Source",
+   "options": "UTM Source"
+  },
+  {
+   "fieldname": "credentials_section",
+   "fieldtype": "Section Break",
+   "label": "Credentials"
+  },
+  {
+   "fieldname": "app_id",
+   "fieldtype": "Data",
+   "label": "App / Client ID"
+  },
+  {
+   "description": "Meta App Secret or TikTok Client Secret. Used to verify webhook signatures.",
+   "fieldname": "app_secret",
+   "fieldtype": "Password",
+   "label": "App / Client Secret",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_credentials",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.platform != 'TikTok'",
+   "description": "Any random string. Enter the same value as the Verify Token in the Meta App webhook settings.",
+   "fieldname": "verify_token",
+   "fieldtype": "Password",
+   "label": "Webhook Verify Token",
+   "mandatory_depends_on": "eval:doc.platform != 'TikTok'"
+  },
+  {
+   "description": "Meta: a long-lived Page access token with leads_retrieval permission.",
+   "fieldname": "access_token",
+   "fieldtype": "Password",
+   "label": "Access Token",
+   "length": 1000
+  },
+  {
+   "default": "v23.0",
+   "depends_on": "eval:doc.platform != 'TikTok'",
+   "fieldname": "graph_api_version",
+   "fieldtype": "Data",
+   "label": "Graph API Version"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [
+  {
+   "link_doctype": "Social Lead Event",
+   "link_fieldname": "account"
+  }
+ ],
+ "modified": "2026-10-06 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Social Integration",
+ "name": "Social Platform Account",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Sales Manager"
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "account_name"
+}

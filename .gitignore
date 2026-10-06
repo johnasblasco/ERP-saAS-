@@ -1,0 +1,18 @@
+# Local bench created by scripts/setup-bench.sh
+/frappe-bench/
+
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.venv/
+node_modules/
+.env
+.DS_Store
+
+# Personal Claude Code overrides
+.claude/settings.local.json
+
+# Local redis-server snapshots
+dump.rdb

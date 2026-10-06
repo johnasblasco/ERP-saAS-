@@ -1,0 +1,15 @@
+{
+  "name": "ERP SaaS (Frappe + ERPNext v16)",
+  "dockerComposeFile": "./docker-compose.yml",
+  "service": "frappe",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "frappe",
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [8000, 9000],
+  "postCreateCommand": "bash scripts/setup-bench.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python", "charliermarsh.ruff", "vue.volar", "esbenp.prettier-vscode"]
+    }
+  }
+}
