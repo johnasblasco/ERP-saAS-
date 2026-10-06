@@ -144,4 +144,5 @@ def send_verification_email(tenant, token):
 	except frappe.OutgoingEmailError:
 		# Raising rolls back the whole request, so no half-created tenant is left behind.
 		frappe.log_error(title="Signup verification email could not be sent")
+		frappe.clear_messages()  # drop Frappe's own "set up an Email Account" message meant for admins
 		frappe.throw(_("We can't send email right now, so signups are paused. Please try again later."))

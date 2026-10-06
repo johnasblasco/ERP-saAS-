@@ -1,5 +1,6 @@
 // Plan notices in the desk: trial countdown, payment reminders, and a blocking notice when suspended.
-$(document).on("startup", () => {
+// app_include_js also loads on pages without the desk runtime (e.g. the setup wizard): do nothing there.
+if (window.jQuery && window.frappe) $(document).on("startup", () => {
 	const sub = frappe.boot.saas_subscription;
 	if (!sub || !sub.status || sub.status === "Active") return;
 

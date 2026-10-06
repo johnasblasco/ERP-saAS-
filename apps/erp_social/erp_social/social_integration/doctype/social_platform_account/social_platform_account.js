@@ -10,7 +10,7 @@ frappe.ui.form.on("Social Platform Account", {
 		if (!frm.doc.webhook_subscribed) {
 			frm.set_intro(
 				__("This account isn't receiving webhooks yet. Use Subscribe webhooks, or reconnect it from {0}.", [
-					`<a href="/app/social-connect">${__("Social Connect")}</a>`,
+					`<a href="/desk/social-connect">${__("Social Connect")}</a>`,
 				]),
 				"orange"
 			);

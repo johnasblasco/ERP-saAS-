@@ -59,7 +59,7 @@ class TestSaaSTenant(IntegrationTestCase):
 			guard.before_request()
 		set_request(method="POST", path="/api/method/erp_social.api.webhooks.meta")
 		guard.before_request()
-		set_request(method="GET", path="/app/todo")
+		set_request(method="GET", path="/desk/todo")
 		guard.before_request()  # pages render; the desk shows the notice
 
 	def test_active_does_not_block(self):

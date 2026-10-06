@@ -1,0 +1,91 @@
+{
+ "charts": [
+  {
+   "chart_name": "New Tenants",
+   "label": "New Tenants"
+  }
+ ],
+ "content": "[{\"id\": \"0842ddd83e\", \"type\": \"chart\", \"data\": {\"chart_name\": \"New Tenants\", \"col\": 12}}, {\"id\": \"59e12efc79\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Live Tenants\", \"col\": 4}}, {\"id\": \"54b1d4c990\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Tenants in Trial\", \"col\": 4}}, {\"id\": \"4cb1d121dd\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Tenants Needing Attention\", \"col\": 4}}, {\"id\": \"0f8dbd71c5\", \"type\": \"header\", \"data\": {\"text\": \"\\u003cspan class=\\\"h4\\\"\\u003e\\u003cb\\u003eShortcuts\\u003c/b\\u003e\\u003c/span\\u003e\", \"col\": 12}}, {\"id\": \"2c8cbb0c1e\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Tenants\", \"col\": 3}}, {\"id\": \"83783bb8cb\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Plans\", \"col\": 3}}, {\"id\": \"69b3573c24\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Subscriptions\", \"col\": 3}}, {\"id\": \"d23a1c570a\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Invoices\", \"col\": 3}}, {\"id\": \"1d05a94021\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Social Routes\", \"col\": 3}}, {\"id\": \"af1e8f566e\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Settings\", \"col\": 3}}, {\"id\": \"762c2b493e\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Signup Page\", \"col\": 3}}]",
+ "creation": "2026-10-06 19:34:03.742788",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "hide_custom": 0,
+ "icon": "server",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "SaaS",
+ "link_type": "DocType",
+ "links": [],
+ "modified": "2026-10-06 19:34:03.742788",
+ "modified_by": "Administrator",
+ "module": "SaaS Control",
+ "name": "SaaS",
+ "number_cards": [
+  {
+   "label": "Live Tenants",
+   "number_card_name": "Live Tenants"
+  },
+  {
+   "label": "Tenants in Trial",
+   "number_card_name": "Tenants in Trial"
+  },
+  {
+   "label": "Tenants Needing Attention",
+   "number_card_name": "Tenants Needing Attention"
+  }
+ ],
+ "owner": "Administrator",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 0.0,
+ "shortcuts": [
+  {
+   "doc_view": "",
+   "label": "Tenants",
+   "link_to": "Tenant",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Plans",
+   "link_to": "SaaS Plan",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Subscriptions",
+   "link_to": "Subscription",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Invoices",
+   "link_to": "Sales Invoice",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Social Routes",
+   "link_to": "Tenant Social Route",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Settings",
+   "link_to": "SaaS Settings",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Signup Page",
+   "type": "URL",
+   "url": "/signup"
+  }
+ ],
+ "standard": 1,
+ "title": "SaaS",
+ "type": "Workspace"
+}

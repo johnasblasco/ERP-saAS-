@@ -48,7 +48,16 @@ for app_path in "$REPO_ROOT"/apps/*/; do
     echo "$app" >> sites/apps.txt
   fi
 done
-bench build --apps "$(cd "$REPO_ROOT/apps" && ls -d */ | tr -d / | paste -sd, -)"
+
+# Our apps ship plain JS (no bundles), so they only need their public/ folder linked under
+# sites/assets. Don't run `bench build --apps <ours>`: it rewrites assets.json with only those
+# apps, and the desk then can't find Frappe's own bundles.
+for app_path in "$REPO_ROOT"/apps/*/; do
+  app="$(basename "$app_path")"
+  if [ -d "apps/$app/$app/public" ] && [ ! -e "sites/assets/$app" ]; then
+    ln -s "$(pwd)/apps/$app/$app/public" "sites/assets/$app"
+  fi
+done
 
 ensure_site() {
   local site="$1"; shift
@@ -74,21 +83,34 @@ bench --site "$CONTROL_SITE" set-config host_name "http://$CONTROL_SITE:$WEB_POR
 bench --site "$TENANT_SITE" set-config host_name "http://$TENANT_SITE:$WEB_PORT"
 
 # The control plane bills tenants through ERPNext, so it needs a Company: run the setup wizard headless.
-if [ "$(bench --site "$CONTROL_SITE" execute frappe.is_setup_complete 2>/dev/null | tail -1)" != "true" ]; then
-  bench --site "$CONTROL_SITE" execute frappe.desk.page.setup_wizard.setup_wizard.setup_complete --kwargs "{\"args\": {
-    \"language\": \"English\", \"country\": \"${COUNTRY:-United States}\", \"timezone\": \"${TIMEZONE:-America/New_York}\",
-    \"currency\": \"${CURRENCY:-USD}\", \"company_name\": \"${COMPANY:-SaaS Operator}\", \"company_abbr\": \"SO\",
-    \"chart_of_accounts\": \"Standard\", \"fy_start_date\": \"$(date +%Y)-01-01\", \"fy_end_date\": \"$(date +%Y)-12-31\",
-    \"setup_demo\": 0, \"enable_telemetry\": 0}}"
-fi
+# The dev tenant gets one too so its desk opens straight away (real customers run the wizard themselves).
+complete_setup_wizard() {
+  local site="$1" company="$2" abbr="$3"
+  if [ "$(bench --site "$site" execute frappe.is_setup_complete 2>/dev/null | tail -1)" != "true" ]; then
+    bench --site "$site" execute frappe.desk.page.setup_wizard.setup_wizard.setup_complete --kwargs "{\"args\": {
+      \"language\": \"English\", \"country\": \"${COUNTRY:-United States}\", \"timezone\": \"${TIMEZONE:-America/New_York}\",
+      \"currency\": \"${CURRENCY:-USD}\", \"company_name\": \"$company\", \"company_abbr\": \"$abbr\",
+      \"chart_of_accounts\": \"Standard\", \"fy_start_date\": \"$(date +%Y)-01-01\", \"fy_end_date\": \"$(date +%Y)-12-31\",
+      \"setup_demo\": 0, \"enable_telemetry\": 0}}"
+  fi
+}
+complete_setup_wizard "$CONTROL_SITE" "${COMPANY:-SaaS Operator}" "SO"
+complete_setup_wizard "$TENANT_SITE" "Demo Tenant" "DT"
 
-# Register the dev tenant with the dev control plane (mirrors what provisioning does).
 tenant_key="$(./env/bin/python -c "import json, sys; print(json.load(open(sys.argv[1])).get('saas_tenant_key', ''))" "sites/$TENANT_SITE/site_config.json")"
 if [ -z "$tenant_key" ]; then
   bench --site "$CONTROL_SITE" execute saas_control.dev.register_existing_site \
     --kwargs "{\"site_name\": \"$TENANT_SITE\", \"url\": \"http://$TENANT_SITE:$WEB_PORT\"}"
 fi
-bench use "$TENANT_SITE"
+# No default site: it would pin every request to one site and break routing by hostname.
+rm -f sites/currentsite.txt
+./env/bin/python - <<'PY'
+import json
+path = "sites/common_site_config.json"
+config = json.load(open(path))
+if config.pop("default_site", None):
+    json.dump(config, open(path, "w"), indent=1)
+PY
 
 echo "Bench ready at $BENCH_DIR. Start it with: cd $BENCH_DIR && bench start"
 echo "  Control plane: http://$CONTROL_SITE:$WEB_PORT  (Administrator / $ADMIN_PASSWORD)"

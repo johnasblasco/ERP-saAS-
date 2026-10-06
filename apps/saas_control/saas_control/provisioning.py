@@ -145,6 +145,7 @@ def send_email(tenant, **kwargs) -> bool:
 	try:
 		frappe.sendmail(now=False, **kwargs)
 	except frappe.OutgoingEmailError:
+		frappe.clear_messages()
 		tenant.db_set(
 			"error",
 			_("Email to {0} not sent: set up an outgoing Email Account, then use Send Setup Link.").format(

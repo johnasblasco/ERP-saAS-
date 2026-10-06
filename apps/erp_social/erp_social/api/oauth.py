@@ -21,7 +21,7 @@ from erp_social.integrations.meta_api import MetaAPIError
 from erp_social.integrations.tiktok_api import TikTokAPIError
 
 ACCOUNT = "Social Platform Account"
-CONNECT_PAGE = "/app/social-connect"
+CONNECT_PAGE = "/desk/social-connect"
 STATE_TTL = 15 * 60
 PENDING_TTL = 30 * 60
 

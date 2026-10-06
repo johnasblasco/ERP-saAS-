@@ -1,0 +1,92 @@
+{
+ "charts": [
+  {
+   "chart_name": "Social Activity",
+   "label": "Social Activity"
+  }
+ ],
+ "content": "[{\"id\": \"518e8f0fe6\", \"type\": \"chart\", \"data\": {\"chart_name\": \"Social Activity\", \"col\": 12}}, {\"id\": \"a686744ed2\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Social Leads This Month\", \"col\": 4}}, {\"id\": \"429e49ea25\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Social Messages This Month\", \"col\": 4}}, {\"id\": \"19bbc5231e\", \"type\": \"number_card\", \"data\": {\"number_card_name\": \"Failed Social Events\", \"col\": 4}}, {\"id\": \"7c1d538aee\", \"type\": \"header\", \"data\": {\"text\": \"\\u003cspan class=\\\"h4\\\"\\u003e\\u003cb\\u003eShortcuts\\u003c/b\\u003e\\u003c/span\\u003e\", \"col\": 12}}, {\"id\": \"417490564a\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Connect Accounts\", \"col\": 3}}, {\"id\": \"2d14c33919\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Leads\", \"col\": 3}}, {\"id\": \"55431e1fcb\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Social Events\", \"col\": 3}}, {\"id\": \"b3f906d5a1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Social Contacts\", \"col\": 3}}, {\"id\": \"fd162ffd1b\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Audiences\", \"col\": 3}}, {\"id\": \"235bd3345f\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Accounts\", \"col\": 3}}, {\"id\": \"15a1fc00bd\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Settings\", \"col\": 3}}]",
+ "creation": "2026-10-07 05:04:55.513373",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "hide_custom": 0,
+ "icon": "share",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Social",
+ "link_type": "DocType",
+ "links": [],
+ "modified": "2026-10-07 05:04:55.513373",
+ "modified_by": "Administrator",
+ "module": "Social Integration",
+ "name": "Social",
+ "number_cards": [
+  {
+   "label": "Social Leads This Month",
+   "number_card_name": "Social Leads This Month"
+  },
+  {
+   "label": "Social Messages This Month",
+   "number_card_name": "Social Messages This Month"
+  },
+  {
+   "label": "Failed Social Events",
+   "number_card_name": "Failed Social Events"
+  }
+ ],
+ "owner": "Administrator",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 0.0,
+ "shortcuts": [
+  {
+   "doc_view": "",
+   "label": "Connect Accounts",
+   "link_to": "social-connect",
+   "type": "Page"
+  },
+  {
+   "doc_view": "",
+   "label": "Leads",
+   "link_to": "Lead",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Social Events",
+   "link_to": "Social Lead Event",
+   "stats_filter": "[[\"Social Lead Event\", \"status\", \"=\", \"Failed\", false]]",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Social Contacts",
+   "link_to": "Social Contact",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Audiences",
+   "link_to": "Social Audience",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Accounts",
+   "link_to": "Social Platform Account",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "",
+   "label": "Settings",
+   "link_to": "Social Integration Settings",
+   "type": "DocType"
+  }
+ ],
+ "standard": 1,
+ "title": "Social",
+ "type": "Workspace"
+}

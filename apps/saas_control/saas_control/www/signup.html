@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} · {{ brand }}</title>
+<meta name="description" content="Accounting, stock and sales in one hosted workspace, with leads from Facebook, Instagram and TikTok.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+	:root {
+		--paper: #f6f8f9;
+		--surface: #ffffff;
+		--ink: #14213d;
+		--muted: #56657a;
+		--rule: #d5dce1;
+		--posted: #1f7a5c;
+		--posted-ink: #ffffff;
+		--posted-soft: #e3f1ec;
+		--red-ink: #b4232c;
+		--focus: #2f6fdb;
+		--measure: 44rem;
+	}
+	@media (prefers-color-scheme: dark) {
+		:root {
+			--paper: #0f1726;
+			--surface: #162034;
+			--ink: #e8edf4;
+			--muted: #9aa8bc;
+			--rule: #2a3750;
+			--posted: #3fae86;
+			--posted-ink: #06140f;
+			--posted-soft: #15362c;
+			--red-ink: #f07a80;
+			--focus: #7aa7f7;
+		}
+	}
+	* { box-sizing: border-box; }
+	html { -webkit-text-size-adjust: 100%; }
+	body {
+		margin: 0;
+		background: var(--paper);
+		color: var(--ink);
+		font: 400 1rem/1.55 "IBM Plex Sans", system-ui, sans-serif;
+		font-variant-numeric: tabular-nums;
+	}
+	a { color: inherit; }
+	:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+	.top {
+		display: flex; justify-content: space-between; align-items: baseline;
+		max-width: var(--measure); margin: 0 auto; padding: 1.25rem 1rem;
+	}
+	.brand { font-weight: 600; text-decoration: none; }
+
+	main { max-width: var(--measure); margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+	h1 {
+		font: 600 clamp(1.75rem, 4.5vw, 2.5rem)/1.15 "IBM Plex Sans", system-ui, sans-serif;
+		letter-spacing: -0.01em; margin: 0 0 1.75rem; max-width: 22ch;
+	}
+
+	/* The address: the one bold thing on the page */
+	.address {
+		display: flex; align-items: baseline; flex-wrap: wrap;
+		font: 600 clamp(1.9rem, 6.5vw, 3.25rem)/1.1 "IBM Plex Sans Condensed", "Arial Narrow", "Roboto Condensed", "IBM Plex Sans", sans-serif;
+		position: relative;
+		border-bottom: 2px solid var(--ink);
+		padding-bottom: .35rem;
+	}
+	.address input {
+		font: inherit; color: var(--posted); background: transparent;
+		border: 0; padding: 0; margin: 0; min-width: 3ch; width: 6ch;
+		caret-color: var(--posted);
+	}
+	.address input::placeholder { color: var(--muted); opacity: .55; }
+	.address input:focus-visible { outline: none; }
+	.address:focus-within { border-bottom-color: var(--posted); }
+	.address .domain { color: var(--muted); word-break: break-all; }
+	.address .measure { position: absolute; visibility: hidden; white-space: pre; pointer-events: none; }
+	.availability { min-height: 1.5rem; margin: .5rem 0 0; font-size: .9375rem; color: var(--muted); }
+	.availability.ok { color: var(--posted); }
+	.availability.bad { color: var(--red-ink); }
+
+	.lede { color: var(--muted); max-width: 60ch; margin: 1.75rem 0 2.5rem; font-size: 1.0625rem; }
+
+	h2 { font-size: 1rem; font-weight: 600; margin: 0 0 .5rem; }
+	fieldset { border: 0; margin: 0 0 2.25rem; padding: 0; min-width: 0; }
+	legend { font-weight: 600; padding: 0; margin-bottom: .5rem; }
+
+	/* Plans read like ledger rows: one rule per row, figures aligned */
+	.plans { border-top: 1px solid var(--rule); }
+	.plan {
+		display: grid; grid-template-columns: 1.5rem 1fr auto; gap: .25rem 1rem;
+		padding: .9rem .25rem; border-bottom: 1px solid var(--rule); cursor: pointer;
+	}
+	.plan input { margin: .3rem 0 0; accent-color: var(--posted); width: 1rem; height: 1rem; }
+	.plan .name { font-weight: 600; }
+	.plan .price { text-align: right; font-weight: 600; white-space: nowrap; }
+	.plan .price small { font-weight: 400; color: var(--muted); }
+	.plan .detail { grid-column: 2 / 4; color: var(--muted); font-size: .9375rem; }
+	.plan:has(input:checked) { background: var(--posted-soft); }
+
+	.fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+	.fields .wide { grid-column: 1 / -1; }
+	label { display: block; font-size: .9375rem; font-weight: 500; margin-bottom: .3rem; }
+	input[type="text"], input[type="email"] {
+		width: 100%; font: inherit; color: var(--ink); background: var(--surface);
+		border: 1px solid var(--rule); border-radius: 6px; padding: .6rem .75rem;
+	}
+	input[type="text"]:focus-visible, input[type="email"]:focus-visible { outline: 2px solid var(--focus); outline-offset: 0; border-color: transparent; }
+
+	.actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: .5rem; }
+	button {
+		font: 600 1rem/1 "IBM Plex Sans", system-ui, sans-serif;
+		background: var(--posted); color: var(--posted-ink);
+		border: 0; border-radius: 6px; padding: .85rem 1.4rem; cursor: pointer;
+	}
+	button[disabled] { opacity: .55; cursor: progress; }
+	.fineprint { color: var(--muted); font-size: .875rem; margin: 0; }
+	.error { color: var(--red-ink); margin: 1rem 0 0; min-height: 1.5rem; }
+
+	/* After submitting: a real sequence, so numbered steps */
+	.progress { list-style: none; padding: 0; margin: 2rem 0 0; counter-reset: step; }
+	.progress li {
+		counter-increment: step; display: grid; grid-template-columns: 2rem 1fr; gap: .75rem;
+		padding: 1rem 0; border-bottom: 1px solid var(--rule); color: var(--muted);
+	}
+	.progress li::before {
+		content: counter(step); display: grid; place-items: center;
+		width: 1.75rem; height: 1.75rem; border-radius: 50%; border: 1px solid var(--rule); font-weight: 600;
+	}
+	.progress li.current { color: var(--ink); }
+	.progress li.current::before { border-color: var(--posted); color: var(--posted); }
+	.progress li.done::before { content: "✓"; background: var(--posted); border-color: var(--posted); color: var(--posted-ink); }
+	.progress strong { display: block; color: var(--ink); }
+	.open-link { display: inline-block; margin-top: .5rem; font-weight: 600; color: var(--posted); }
+
+	.closed { border-left: 3px solid var(--rule); padding-left: 1rem; color: var(--muted); }
+
+	@media (max-width: 34rem) {
+		.fields { grid-template-columns: 1fr; }
+		.plan { grid-template-columns: 1.5rem 1fr; }
+		.plan .price { grid-column: 2; text-align: left; }
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.address .domain { transition: color .2s; }
+	}
+	[hidden] { display: none !important; }
+	.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+</style>
+</head>
+<body>
+<header class="top">
+	<a class="brand" href="/">{{ brand }}</a>
+</header>
+
+<main>
+	<section id="signup-view" {% if not allow_signups %}hidden{% endif %}>
+		<h1>Your business, at its own address.</h1>
+
+		<form id="signup-form" novalidate>
+			<label for="subdomain" class="sr-only">Workspace address</label>
+			<div class="address">
+				<input id="subdomain" name="subdomain" autocomplete="off" autocapitalize="none" spellcheck="false"
+					placeholder="yourcompany" maxlength="32" required aria-describedby="availability">
+				<span class="domain">.{{ root_domain }}</span>
+				<span class="measure" id="measure" aria-hidden="true"></span>
+			</div>
+			<p class="availability" id="availability" aria-live="polite">Letters, numbers and hyphens. You can't change it later.</p>
+
+			<p class="lede">Accounting, stock, buying and selling in one place. Leads from your Facebook, Instagram and TikTok ads land straight in your CRM, and you can answer Messenger and Instagram chats from there too.</p>
+
+			{% if plans %}
+			<fieldset>
+				<legend>Plan</legend>
+				<div class="plans">
+				{% for plan in plans %}
+					<label class="plan">
+						<input type="radio" name="plan" value="{{ plan.name }}" {% if plan.default %}checked{% endif %}>
+						<span class="name">{{ plan.label }}</span>
+						<span class="price">{% if plan.price %}{{ plan.price }} <small>/ {{ plan.interval }}</small>{% else %}Free{% endif %}</span>
+						<span class="detail">
+							{%- if plan.users %}Up to {{ plan.users }} users{% else %}Unlimited users{% endif -%}
+							{%- if plan.tagline %}. {{ plan.tagline }}{% endif -%}
+							{%- if plan.features %}. {{ plan.features | join(", ") }}{% endif %}
+						</span>
+					</label>
+				{% endfor %}
+				</div>
+			</fieldset>
+			{% endif %}
+
+			<fieldset>
+				<legend>About you</legend>
+				<div class="fields">
+					<div>
+						<label for="full_name">Your name</label>
+						<input type="text" id="full_name" name="full_name" autocomplete="name" required>
+					</div>
+					<div>
+						<label for="company_name">Company</label>
+						<input type="text" id="company_name" name="company_name" autocomplete="organization" required>
+					</div>
+					<div class="wide">
+						<label for="email">Work email</label>
+						<input type="email" id="email" name="email" autocomplete="email" required>
+					</div>
+				</div>
+			</fieldset>
+
+			<div class="actions">
+				<button type="submit" id="submit">Create workspace</button>
+				<p class="fineprint">
+					{% if trial_days %}{{ trial_days }}-day free trial, no card needed.{% endif %}
+					{% if verify_email %}We'll email you a link to confirm.{% endif %}
+				</p>
+			</div>
+			<p class="error" id="form-error" role="alert"></p>
+		</form>
+	</section>
+
+	{% if not allow_signups %}
+	<p class="closed">New workspaces aren't open right now. If you already have one, sign in at its address.</p>
+	{% endif %}
+
+	<section id="progress-view" hidden aria-live="polite">
+		<h1 id="progress-title">Setting up your workspace</h1>
+		<ol class="progress">
+			<li id="step-verify"><div><strong>Confirm your email</strong><span id="step-verify-text">Open the link we sent to finish signing up.</span></div></li>
+			<li id="step-build"><div><strong>Build your workspace</strong><span id="step-build-text">This takes a few minutes. You can close this page; we'll email you when it's ready.</span></div></li>
+			<li id="step-open"><div><strong>Sign in</strong><span id="step-open-text">Set your password from the email, then finish a short setup.</span><br><a class="open-link" id="open-link" hidden href="#">Open your workspace</a></div></li>
+		</ol>
+	</section>
+</main>
+
+<script>
+(() => {
+	const ROOT = {{ root_domain | tojson }};
+	const CSRF = {{ csrf_token | tojson }};
+	const $ = (id) => document.getElementById(id);
+
+	const api = async (method, args, http = "GET") => {
+		const url = new URL(`/api/method/saas_control.api.signup.${method}`, location.origin);
+		const init = { method: http, headers: { Accept: "application/json", "X-Frappe-CSRF-Token": CSRF } };
+		if (http === "GET") Object.entries(args).forEach(([k, v]) => url.searchParams.set(k, v));
+		else { init.headers["Content-Type"] = "application/json"; init.body = JSON.stringify(args); }
+		const res = await fetch(url, init);
+		const body = await res.json().catch(() => ({}));
+		if (!res.ok) {
+			let message = "Something went wrong. Check your details and try again.";
+			try {
+				const messages = JSON.parse(body._server_messages).map((m) => JSON.parse(m).message);
+				const html = messages[messages.length - 1];
+				if (html) message = new DOMParser().parseFromString(html, "text/html").body.textContent;
+			} catch (e) {}
+			if (res.status === 429) message = "Too many attempts from your network. Wait a little and try again.";
+			throw new Error(message);
+		}
+		return body.message;
+	};
+
+	// --- address ---------------------------------------------------------------
+	const input = $("subdomain");
+	const availability = $("availability");
+	let checkTimer, lastChecked = "", available = false;
+
+	// Size the input to its text so the domain sits right after it, like one address.
+	const measure = $("measure");
+	const fit = () => {
+		measure.textContent = input.value || input.placeholder;
+		input.style.width = `${measure.offsetWidth + 2}px`;
+	};
+	const setAvailability = (text, state) => {
+		availability.textContent = text;
+		availability.className = `availability${state ? " " + state : ""}`;
+	};
+
+	input?.addEventListener("input", () => {
+		input.value = input.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+		fit();
+		available = false;
+		clearTimeout(checkTimer);
+		const value = input.value;
+		if (value.length < 3) return setAvailability("At least 3 characters.", value ? "bad" : "");
+		setAvailability("Checking…");
+		checkTimer = setTimeout(async () => {
+			try {
+				const result = await api("check_subdomain", { subdomain: value });
+				if (input.value !== value) return;
+				lastChecked = value;
+				available = result.available;
+				setAvailability(result.available ? `${value}.${ROOT} is available.` : result.message, result.available ? "ok" : "bad");
+			} catch (e) { setAvailability(e.message, "bad"); }
+		}, 350);
+	});
+	if (input) { fit(); document.fonts?.ready.then(fit); }
+
+	// --- submit ----------------------------------------------------------------
+	$("signup-form")?.addEventListener("submit", async (event) => {
+		event.preventDefault();
+		const form = event.target;
+		const error = $("form-error");
+		error.textContent = "";
+		const data = Object.fromEntries(new FormData(form));
+		const missing = ["subdomain", "full_name", "company_name", "email"].find((k) => !String(data[k] || "").trim());
+		if (missing) { error.textContent = "Fill in every field to create your workspace."; form.elements[missing].focus(); return; }
+		if (!available || lastChecked !== data.subdomain) { error.textContent = "Choose an available address first."; input.focus(); return; }
+
+		const button = $("submit");
+		button.disabled = true;
+		button.textContent = "Creating workspace…";
+		try {
+			const result = await api("create", data, "POST");
+			showProgress(result.workspace, result.next === "verify_email" ? "verify_email" : "provisioning", data.email);
+		} catch (e) {
+			error.textContent = e.message;
+			button.disabled = false;
+			button.textContent = "Create workspace";
+		}
+	});
+
+	// --- progress --------------------------------------------------------------
+	const steps = ["step-verify", "step-build", "step-open"];
+	const mark = (current) => steps.forEach((id, i) => {
+		const index = steps.indexOf(current);
+		$(id).className = i < index ? "done" : i === index ? "current" : "";
+	});
+
+	let pollTimer;
+	function showProgress(workspace, state, email) {
+		$("signup-view").hidden = true;
+		$("progress-view").hidden = false;
+		const params = new URLSearchParams(location.search);
+		params.set("workspace", workspace);
+		history.replaceState(null, "", `?${params}`);
+
+		if (state === "verify_email") {
+			mark("step-verify");
+			$("progress-title").textContent = "Check your inbox";
+			if (email) $("step-verify-text").textContent = `We sent a confirmation link to ${email}. It creates your workspace when you open it.`;
+			return;
+		}
+		if (state === "provisioning") {
+			mark("step-build");
+			$("progress-title").textContent = "Building your workspace";
+			clearTimeout(pollTimer);
+			pollTimer = setTimeout(() => poll(workspace), 4000);
+			return;
+		}
+		if (state === "ready") return ready(workspace);
+		if (state === "failed") {
+			mark("step-build");
+			$("progress-title").textContent = "We couldn't finish your workspace";
+			$("step-build-text").textContent = "Our team has been notified and will email you. You don't need to sign up again.";
+			return;
+		}
+		$("progress-title").textContent = "This workspace isn't available";
+		$("step-verify-text").textContent = "The link may be old. Start a new signup below or contact support.";
+	}
+
+	async function poll(workspace) {
+		try {
+			const result = await api("status", { workspace });
+			if (result.state === "ready") return ready(workspace, result.url);
+			showProgress(workspace, result.state);
+		} catch (e) {
+			pollTimer = setTimeout(() => poll(workspace), 8000);
+		}
+	}
+
+	function ready(workspace, url) {
+		mark("step-open");
+		$("progress-title").textContent = "Your workspace is ready";
+		$("step-build-text").textContent = "Done.";
+		const link = $("open-link");
+		link.href = url || `https://${workspace}.${ROOT}`;
+		link.textContent = `Open ${new URL(link.href).host}`;
+		link.hidden = false;
+	}
+
+	// Coming back from the email link (?workspace=...) or a bad link (?error=...)
+	const params = new URLSearchParams(location.search);
+	if (params.get("workspace")) {
+		poll(params.get("workspace"));
+		$("signup-view").hidden = true;
+		$("progress-view").hidden = false;
+		mark("step-build");
+	} else if (params.get("error") === "invalid_link") {
+		$("form-error").textContent = "That confirmation link isn't valid anymore. Sign up again to get a new one.";
+	}
+})();
+</script>
+</body>
+</html>
