@@ -1,13 +1,19 @@
 frappe.ui.form.on("Social Platform Account", {
 	refresh(frm) {
 		if (frm.is_new()) return;
-		const path =
-			frm.doc.platform === "TikTok"
-				? "/api/method/erp_social.api.webhooks.tiktok"
-				: "/api/method/erp_social.api.webhooks.meta";
-		frm.set_intro(
-			__("Webhook callback URL: {0}", [`<code>${frappe.urllib.get_base_url()}${path}</code>`]),
-			"blue"
+		frm.add_custom_button(__("Subscribe webhooks"), () =>
+			frm.call("subscribe_webhooks").then(() => {
+				frappe.show_alert({ message: __("Webhooks subscribed"), indicator: "green" });
+				frm.reload_doc();
+			})
 		);
+		if (!frm.doc.webhook_subscribed) {
+			frm.set_intro(
+				__("This account isn't receiving webhooks yet. Use Subscribe webhooks, or reconnect it from {0}.", [
+					`<a href="/app/social-connect">${__("Social Connect")}</a>`,
+				]),
+				"orange"
+			);
+		}
 	},
 });

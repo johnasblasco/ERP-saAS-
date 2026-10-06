@@ -1,0 +1,162 @@
+{
+ "actions": [],
+ "autoname": "field:audience_name",
+ "creation": "2026-10-06 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "audience_name",
+  "account",
+  "platform",
+  "source",
+  "customer_group",
+  "cb_main",
+  "auto_sync",
+  "status",
+  "audience_id",
+  "last_synced_on",
+  "last_sync_count",
+  "error_section",
+  "error"
+ ],
+ "fields": [
+  {
+   "fieldname": "audience_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Audience Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "account",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Ad Account",
+   "options": "Social Platform Account",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "account.platform",
+   "fieldname": "platform",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Platform",
+   "read_only": 1
+  },
+  {
+   "default": "Customers",
+   "fieldname": "source",
+   "fieldtype": "Select",
+   "label": "People",
+   "options": "Customers\nLeads\nCustomers and Leads",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.source != 'Leads'",
+   "fieldname": "customer_group",
+   "fieldtype": "Link",
+   "label": "Customer Group",
+   "options": "Customer Group"
+  },
+  {
+   "fieldname": "cb_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "auto_sync",
+   "fieldtype": "Check",
+   "label": "Sync Daily"
+  },
+  {
+   "default": "Not Synced",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Not Synced\nSyncing\nSynced\nFailed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "audience_id",
+   "fieldtype": "Data",
+   "label": "Platform Audience ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_synced_on",
+   "fieldtype": "Datetime",
+   "label": "Last Synced On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_sync_count",
+   "fieldtype": "Int",
+   "label": "People Sent",
+   "read_only": 1
+  },
+  {
+   "depends_on": "error",
+   "fieldname": "error_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "error",
+   "fieldtype": "Long Text",
+   "label": "Error",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-06 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Social Integration",
+ "name": "Social Audience",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "write": 1,
+   "delete": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Gray",
+   "title": "Not Synced"
+  },
+  {
+   "color": "Blue",
+   "title": "Syncing"
+  },
+  {
+   "color": "Green",
+   "title": "Synced"
+  },
+  {
+   "color": "Red",
+   "title": "Failed"
+  }
+ ],
+ "title_field": "audience_name"
+}

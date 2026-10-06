@@ -1,0 +1,134 @@
+{
+ "actions": [],
+ "creation": "2026-10-06 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "meta_section",
+  "meta_app_id",
+  "meta_app_secret",
+  "meta_cb",
+  "meta_verify_token",
+  "meta_graph_api_version",
+  "tiktok_section",
+  "tiktok_app_id",
+  "tiktok_app_secret",
+  "tiktok_cb",
+  "tiktok_webhook_token",
+  "leads_section",
+  "default_lead_owner",
+  "default_country_code",
+  "leads_cb",
+  "create_leads_from_messages"
+ ],
+ "fields": [
+  {
+   "description": "The Meta App used by \"Connect Facebook Page\". Leave blank to use the bench-wide app configured by your provider.",
+   "fieldname": "meta_section",
+   "fieldtype": "Section Break",
+   "label": "Meta (Facebook & Instagram)"
+  },
+  {
+   "fieldname": "meta_app_id",
+   "fieldtype": "Data",
+   "label": "App ID"
+  },
+  {
+   "fieldname": "meta_app_secret",
+   "fieldtype": "Password",
+   "label": "App Secret"
+  },
+  {
+   "fieldname": "meta_cb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Only needed when this site receives Meta webhooks directly.",
+   "fieldname": "meta_verify_token",
+   "fieldtype": "Password",
+   "label": "Webhook Verify Token"
+  },
+  {
+   "default": "v26.0",
+   "fieldname": "meta_graph_api_version",
+   "fieldtype": "Data",
+   "label": "Graph API Version"
+  },
+  {
+   "fieldname": "tiktok_section",
+   "fieldtype": "Section Break",
+   "label": "TikTok"
+  },
+  {
+   "fieldname": "tiktok_app_id",
+   "fieldtype": "Data",
+   "label": "App ID"
+  },
+  {
+   "fieldname": "tiktok_app_secret",
+   "fieldtype": "Password",
+   "label": "App Secret"
+  },
+  {
+   "fieldname": "tiktok_cb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Generated automatically. Part of the lead webhook URL registered with TikTok.",
+   "fieldname": "tiktok_webhook_token",
+   "fieldtype": "Password",
+   "label": "Webhook Token",
+   "read_only": 1
+  },
+  {
+   "fieldname": "leads_section",
+   "fieldtype": "Section Break",
+   "label": "Leads & Messages"
+  },
+  {
+   "fieldname": "default_lead_owner",
+   "fieldtype": "Link",
+   "label": "Default Lead Owner",
+   "options": "User"
+  },
+  {
+   "description": "Calling code added to local phone numbers when building ad audiences, e.g. 63 for the Philippines.",
+   "fieldname": "default_country_code",
+   "fieldtype": "Data",
+   "label": "Default Phone Country Code"
+  },
+  {
+   "fieldname": "leads_cb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "create_leads_from_messages",
+   "fieldtype": "Check",
+   "label": "Create a Lead for each new message sender"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-10-06 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Social Integration",
+ "name": "Social Integration Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

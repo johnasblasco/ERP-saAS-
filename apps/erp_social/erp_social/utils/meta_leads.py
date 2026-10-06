@@ -1,22 +1,9 @@
-"""Parsing helpers for Meta (Facebook / Instagram) Lead Ads payloads.
+"""Parsing helpers for Meta (Facebook / Instagram) webhook payloads.
 
 Pure functions with no Frappe imports so they can be unit-tested anywhere.
 """
 
-# Meta lead form field name -> ERPNext Lead field
-FIELD_MAP = {
-	"first_name": "first_name",
-	"last_name": "last_name",
-	"email": "email_id",
-	"phone_number": "mobile_no",
-	"company_name": "company_name",
-	"job_title": "job_title",
-	"city": "city",
-	"state": "state",
-	"website": "website",
-	# `country` is deliberately absent: Lead.country is a Link, and free-text answers
-	# that don't match a Country record would fail link validation.
-}
+from erp_social.utils.lead_fields import map_answers
 
 
 def extract_leadgen_changes(payload: dict) -> list[dict]:
@@ -49,26 +36,64 @@ def extract_leadgen_changes(payload: dict) -> list[dict]:
 	return events
 
 
+def extract_messages(payload: dict) -> list[dict]:
+	"""Return incoming Messenger / Instagram DMs from a webhook delivery.
+
+	Messenger: {"object": "page", "entry": [{"id": page_id, "messaging": [...]}]}
+	Instagram: {"object": "instagram", "entry": [{"id": ig_account_id, "messaging": [...]}]}
+	Echoes of our own sends, reads and deliveries are skipped.
+	"""
+	if not isinstance(payload, dict):
+		return []
+	platform = {"page": "Facebook", "instagram": "Instagram"}.get(payload.get("object"))
+	if not platform:
+		return []
+
+	messages = []
+	for entry in payload.get("entry") or []:
+		account_id = str(entry.get("id") or "")
+		for item in entry.get("messaging") or []:
+			message = item.get("message") or {}
+			if not message or message.get("is_echo") or message.get("is_deleted"):
+				continue
+			mid = str(message.get("mid") or "")
+			sender_id = str((item.get("sender") or {}).get("id") or "")
+			if not mid or not sender_id or sender_id == account_id:
+				continue
+			attachments = [
+				(a.get("payload") or {}).get("url")
+				for a in message.get("attachments") or []
+				if (a.get("payload") or {}).get("url")
+			]
+			messages.append(
+				{
+					"platform": platform,
+					"account_id": account_id,
+					"sender_id": sender_id,
+					"mid": mid,
+					"text": str(message.get("text") or ""),
+					"attachments": attachments,
+					"timestamp": item.get("timestamp"),
+				}
+			)
+	return messages
+
+
+def entry_ids(payload: dict) -> list[str]:
+	"""Page / Instagram account IDs a delivery is about (used for routing)."""
+	if not isinstance(payload, dict):
+		return []
+	return [str(e.get("id")) for e in payload.get("entry") or [] if isinstance(e, dict) and e.get("id")]
+
+
 def map_field_data(field_data: list[dict]) -> dict:
 	"""Map a Graph API lead's `field_data` list onto ERPNext Lead fields.
 
 	`field_data` looks like [{"name": "email", "values": ["a@b.com"]}, ...].
-	A `full_name` answer is split into first/last name when those aren't given separately.
 	"""
 	answers = {}
 	for item in field_data or []:
-		name = (item.get("name") or "").strip().lower()
 		values = [str(v).strip() for v in item.get("values") or [] if str(v).strip()]
-		if name and values:
-			answers[name] = ", ".join(values)
-
-	lead = {FIELD_MAP[key]: value for key, value in answers.items() if key in FIELD_MAP}
-
-	full_name = answers.get("full_name")
-	if full_name and not lead.get("first_name"):
-		first, _, last = full_name.partition(" ")
-		lead["first_name"] = first
-		if last and not lead.get("last_name"):
-			lead["last_name"] = last.strip()
-
-	return lead
+		if item.get("name") and values:
+			answers[item["name"]] = ", ".join(values)
+	return map_answers(answers)

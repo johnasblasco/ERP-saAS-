@@ -8,17 +8,28 @@
   "account_name",
   "platform",
   "external_id",
-  "column_break_main",
+  "cb_main",
   "enabled",
+  "connection_method",
+  "webhook_subscribed",
+  "instagram_section",
+  "instagram_account_id",
+  "instagram_username",
+  "cb_ig",
+  "ad_account_id",
+  "lead_section",
   "lead_owner",
+  "cb_lead",
   "utm_source",
   "credentials_section",
+  "access_token",
+  "user_access_token",
+  "token_expires_on",
+  "tiktok_subscription_id",
+  "cb_cred",
   "app_id",
   "app_secret",
-  "column_break_credentials",
-  "verify_token",
-  "access_token",
-  "graph_api_version"
+  "verify_token"
  ],
  "fields": [
   {
@@ -30,16 +41,16 @@
    "unique": 1
   },
   {
+   "description": "Facebook also covers the Instagram account linked to the Page.",
    "fieldname": "platform",
    "fieldtype": "Select",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Platform",
-   "options": "Facebook\nInstagram\nTikTok",
+   "options": "Facebook\nTikTok",
    "reqd": 1
   },
   {
-   "description": "Facebook/Instagram: the Page ID that owns the lead forms. TikTok: the advertiser ID.",
    "fieldname": "external_id",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -48,7 +59,7 @@
    "search_index": 1
   },
   {
-   "fieldname": "column_break_main",
+   "fieldname": "cb_main",
    "fieldtype": "Column Break"
   },
   {
@@ -59,11 +70,60 @@
    "label": "Enabled"
   },
   {
-   "description": "New Leads from this account are assigned to this user.",
+   "default": "Manual",
+   "fieldname": "connection_method",
+   "fieldtype": "Select",
+   "label": "Connected Via",
+   "options": "Manual\nOAuth",
+   "read_only": 1
+  },
+  {
+   "fieldname": "webhook_subscribed",
+   "fieldtype": "Check",
+   "label": "Webhook Subscribed",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.platform == 'Facebook'",
+   "fieldname": "instagram_section",
+   "fieldtype": "Section Break",
+   "label": "Instagram & Ads"
+  },
+  {
+   "fieldname": "instagram_account_id",
+   "fieldtype": "Data",
+   "label": "Instagram Account ID",
+   "search_index": 1
+  },
+  {
+   "fieldname": "instagram_username",
+   "fieldtype": "Data",
+   "label": "Instagram Username"
+  },
+  {
+   "fieldname": "cb_ig",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Used to create Custom Audiences, e.g. 1234567890 (without act_).",
+   "fieldname": "ad_account_id",
+   "fieldtype": "Data",
+   "label": "Ad Account ID"
+  },
+  {
+   "fieldname": "lead_section",
+   "fieldtype": "Section Break",
+   "label": "Lead Defaults"
+  },
+  {
    "fieldname": "lead_owner",
    "fieldtype": "Link",
    "label": "Lead Owner",
    "options": "User"
+  },
+  {
+   "fieldname": "cb_lead",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "utm_source",
@@ -72,53 +132,73 @@
    "options": "UTM Source"
   },
   {
+   "collapsible": 1,
    "fieldname": "credentials_section",
    "fieldtype": "Section Break",
    "label": "Credentials"
   },
   {
-   "fieldname": "app_id",
-   "fieldtype": "Data",
-   "label": "App / Client ID"
-  },
-  {
-   "description": "Meta App Secret or TikTok Client Secret. Used to verify webhook signatures.",
-   "fieldname": "app_secret",
-   "fieldtype": "Password",
-   "label": "App / Client Secret",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_credentials",
-   "fieldtype": "Column Break"
-  },
-  {
-   "depends_on": "eval:doc.platform != 'TikTok'",
-   "description": "Any random string. Enter the same value as the Verify Token in the Meta App webhook settings.",
-   "fieldname": "verify_token",
-   "fieldtype": "Password",
-   "label": "Webhook Verify Token",
-   "mandatory_depends_on": "eval:doc.platform != 'TikTok'"
-  },
-  {
-   "description": "Meta: a long-lived Page access token with leads_retrieval permission.",
+   "description": "Facebook: Page access token. TikTok: advertiser access token.",
    "fieldname": "access_token",
    "fieldtype": "Password",
    "label": "Access Token",
    "length": 1000
   },
   {
-   "default": "v23.0",
-   "depends_on": "eval:doc.platform != 'TikTok'",
-   "fieldname": "graph_api_version",
+   "depends_on": "eval:doc.platform == 'Facebook'",
+   "description": "Meta user token with ads_management, used for Custom Audiences.",
+   "fieldname": "user_access_token",
+   "fieldtype": "Password",
+   "label": "User Access Token",
+   "length": 1000
+  },
+  {
+   "fieldname": "token_expires_on",
+   "fieldtype": "Datetime",
+   "label": "User Token Expires On",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.platform == 'TikTok'",
+   "fieldname": "tiktok_subscription_id",
    "fieldtype": "Data",
-   "label": "Graph API Version"
+   "label": "TikTok Subscription ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_cred",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Only if this account uses its own app. Blank = Social Integration Settings.",
+   "fieldname": "app_id",
+   "fieldtype": "Data",
+   "label": "Own App ID"
+  },
+  {
+   "fieldname": "app_secret",
+   "fieldtype": "Password",
+   "label": "Own App Secret"
+  },
+  {
+   "depends_on": "eval:doc.platform == 'Facebook'",
+   "fieldname": "verify_token",
+   "fieldtype": "Password",
+   "label": "Own Webhook Verify Token"
   }
  ],
  "index_web_pages_for_search": 0,
  "links": [
   {
    "link_doctype": "Social Lead Event",
+   "link_fieldname": "account"
+  },
+  {
+   "link_doctype": "Social Contact",
+   "link_fieldname": "account"
+  },
+  {
+   "link_doctype": "Social Audience",
    "link_fieldname": "account"
   }
  ],
@@ -143,6 +223,7 @@
   },
   {
    "read": 1,
+   "report": 1,
    "role": "Sales Manager"
   }
  ],

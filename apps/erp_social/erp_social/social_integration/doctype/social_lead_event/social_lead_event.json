@@ -9,10 +9,12 @@
   "account",
   "event_type",
   "external_id",
-  "column_break_main",
+  "cb_main",
   "status",
   "lead",
-  "section_details",
+  "contact",
+  "communication",
+  "details_section",
   "error",
   "payload"
  ],
@@ -36,12 +38,15 @@
   },
   {
    "fieldname": "event_type",
-   "fieldtype": "Data",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Event Type",
+   "options": "leadgen\nmessage\ntiktok_lead",
    "read_only": 1
   },
   {
-   "description": "The platform's ID for this event, e.g. the Meta leadgen_id.",
+   "description": "The platform's ID for this event, e.g. the Meta leadgen_id or message id.",
    "fieldname": "external_id",
    "fieldtype": "Data",
    "label": "External ID",
@@ -49,7 +54,7 @@
    "search_index": 1
   },
   {
-   "fieldname": "column_break_main",
+   "fieldname": "cb_main",
    "fieldtype": "Column Break"
   },
   {
@@ -71,7 +76,21 @@
    "read_only": 1
   },
   {
-   "fieldname": "section_details",
+   "fieldname": "contact",
+   "fieldtype": "Link",
+   "label": "Social Contact",
+   "options": "Social Contact",
+   "read_only": 1
+  },
+  {
+   "fieldname": "communication",
+   "fieldtype": "Link",
+   "label": "Communication",
+   "options": "Communication",
+   "read_only": 1
+  },
+  {
+   "fieldname": "details_section",
    "fieldtype": "Section Break",
    "label": "Details"
   },
@@ -101,12 +120,12 @@
  "owner": "Administrator",
  "permissions": [
   {
-   "delete": 1,
    "export": 1,
    "read": 1,
    "report": 1,
    "role": "System Manager",
-   "write": 1
+   "write": 1,
+   "delete": 1
   },
   {
    "read": 1,
@@ -117,9 +136,21 @@
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [
-  {"color": "Blue", "title": "Received"},
-  {"color": "Green", "title": "Processed"},
-  {"color": "Red", "title": "Failed"},
-  {"color": "Gray", "title": "Ignored"}
+  {
+   "color": "Blue",
+   "title": "Received"
+  },
+  {
+   "color": "Green",
+   "title": "Processed"
+  },
+  {
+   "color": "Red",
+   "title": "Failed"
+  },
+  {
+   "color": "Gray",
+   "title": "Ignored"
+  }
  ]
 }
