@@ -70,3 +70,19 @@ def test_bench_runner_masks_log_but_returns_raw_output(tmp_path, monkeypatch):
 	assert bench.run("--site", "s", "execute", "x") == output
 	log = bench.text_log()
 	assert "abc123" not in log and "secret-key" not in log and "update-password?key=********" in log
+
+
+def test_cli_kwargs_round_trips_hostile_strings_through_eval():
+	import pytest
+
+	from saas_control.utils import cli_kwargs
+
+	values = {
+		"owner_name": 'Robert"); __import__("os").system("id"); ("',
+		"company": "O'Brien \\ Sons\n  é",
+		"trial_ends_on": None,
+		"max_users": 5,
+	}
+	assert eval(cli_kwargs(values)) == values  # noqa: S307 - mirrors `bench execute`
+	with pytest.raises(TypeError):
+		cli_kwargs({"x": object()})

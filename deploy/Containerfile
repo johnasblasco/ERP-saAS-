@@ -1,0 +1,22 @@
+# Production image: the official ERPNext image plus this repo's apps.
+#
+#   docker build -f deploy/Containerfile -t ghcr.io/<you>/erp-saas:<tag> .
+#
+# Build from the repo root (the build context must contain apps/).
+ARG ERPNEXT_IMAGE=frappe/erpnext:v16.50.0
+FROM ${ERPNEXT_IMAGE}
+
+USER frappe
+WORKDIR /home/frappe/frappe-bench
+
+COPY --chown=frappe:frappe apps/erp_social apps/erp_social
+COPY --chown=frappe:frappe apps/saas_tenant apps/saas_tenant
+COPY --chown=frappe:frappe apps/saas_control apps/saas_control
+
+# Editable installs, the same way `bench get-app` installs apps. Our apps ship plain JS (no
+# bundles), so they only need their public/ folders linked into the baked assets directory.
+RUN ./env/bin/pip install --no-cache-dir -e apps/erp_social -e apps/saas_tenant -e apps/saas_control \
+ && for app in erp_social saas_tenant saas_control; do \
+      ln -sfn /home/frappe/frappe-bench/apps/$app/$app/public /home/frappe/frappe-bench/assets/$app; \
+    done \
+ && ./env/bin/python -c "import erp_social, saas_tenant, saas_control"

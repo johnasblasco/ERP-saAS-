@@ -60,6 +60,16 @@ def meta_entry_ids(body: bytes) -> list[str]:
 	return sorted({str(e["id"]) for e in payload.get("entry") or [] if isinstance(e, dict) and e.get("id")})
 
 
+def cli_kwargs(values: dict) -> str:
+	"""`--kwargs` for `bench execute`, which eval()s it. A repr() of plain str/int/bool/None values is
+	read back exactly and can't run code, however hostile the strings (signup input ends up here).
+	JSON would not do: `null` isn't Python."""
+	for key, value in values.items():
+		if not isinstance(key, str) or not (value is None or isinstance(value, (str, int, bool))):
+			raise TypeError(f"Unsupported value for {key!r}: {type(value).__name__}")
+	return repr(dict(values))
+
+
 def parse_execute_output(output: str):
 	"""`bench execute` prints the function's return value as JSON on its last line."""
 	for line in reversed((output or "").strip().splitlines()):

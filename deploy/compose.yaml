@@ -1,0 +1,163 @@
+# Production stack: one bench serving the control site and every tenant site.
+# Adapted from frappe/frappe_docker pwd.yml (MIT). See docs/deployment.md.
+#
+#   cp deploy/.env.example deploy/.env   # then edit it
+#   docker compose -f deploy/compose.yaml --env-file deploy/.env up -d
+#
+# Requests are routed to sites by Host header, so a new tenant needs no proxy or DNS change:
+# *.ROOT_DOMAIN points here and Caddy gets each tenant a certificate on first visit.
+
+x-app: &app
+  image: ${IMAGE}
+  restart: unless-stopped
+  networks: [frappe_network]
+  volumes:
+    - sites:/home/frappe/frappe-bench/sites
+    - logs:/home/frappe/frappe-bench/logs
+
+x-after-config: &after-config
+  depends_on:
+    configurator:
+      condition: service_completed_successfully
+
+services:
+  configurator:
+    <<: *app
+    restart: "no"
+    entrypoint: ["bash", "-c"]
+    command:
+      - >
+        ls -1 apps > sites/apps.txt;
+        bench set-config -g db_host db;
+        bench set-config -gp db_port 3306;
+        bench set-config -g redis_cache "redis://redis-cache:6379";
+        bench set-config -g redis_queue "redis://redis-queue:6379";
+        bench set-config -g redis_socketio "redis://redis-queue:6379";
+        bench set-config -gp socketio_port 9000;
+        bench set-config -g root_password "$$DB_ROOT_PASSWORD";
+        bench set-config -gp dns_multitenant True;
+        [ -n "$$META_APP_ID" ] && bench set-config -g erp_social_meta_app_id "$$META_APP_ID";
+        [ -n "$$META_APP_SECRET" ] && bench set-config -g erp_social_meta_app_secret "$$META_APP_SECRET";
+        [ -n "$$META_VERIFY_TOKEN" ] && bench set-config -g erp_social_meta_verify_token "$$META_VERIFY_TOKEN";
+        [ -n "$$TIKTOK_APP_ID" ] && bench set-config -g erp_social_tiktok_app_id "$$TIKTOK_APP_ID";
+        [ -n "$$TIKTOK_APP_SECRET" ] && bench set-config -g erp_social_tiktok_app_secret "$$TIKTOK_APP_SECRET";
+        true
+    environment:
+      DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?set DB_ROOT_PASSWORD}
+      META_APP_ID: ${META_APP_ID:-}
+      META_APP_SECRET: ${META_APP_SECRET:-}
+      META_VERIFY_TOKEN: ${META_VERIFY_TOKEN:-}
+      TIKTOK_APP_ID: ${TIKTOK_APP_ID:-}
+      TIKTOK_APP_SECRET: ${TIKTOK_APP_SECRET:-}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  create-control-site:
+    <<: [*app, *after-config]
+    restart: "no"
+    entrypoint: ["bash", "-c"]
+    command:
+      - >
+        wait-for-it -t 120 db:3306 && wait-for-it -t 120 redis-cache:6379 && wait-for-it -t 120 redis-queue:6379;
+        if [ ! -d "sites/$$CONTROL_SITE" ]; then
+          bench new-site "$$CONTROL_SITE" --mariadb-user-host-login-scope='%'
+            --admin-password "$$ADMIN_PASSWORD" --install-app erpnext --install-app saas_control &&
+          bench --site "$$CONTROL_SITE" set-config host_name "https://$$CONTROL_SITE" &&
+          bench --site "$$CONTROL_SITE" enable-scheduler;
+        fi
+    environment:
+      CONTROL_SITE: ${CONTROL_SITE:?set CONTROL_SITE}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD}
+
+  backend:
+    <<: [*app, *after-config]
+
+  # Provisioning runs `new-site` here, so this worker needs the long queue and the shared sites volume.
+  queue-long:
+    <<: [*app, *after-config]
+    command: ["bench", "worker", "--queue", "long,default,short"]
+
+  queue-short:
+    <<: [*app, *after-config]
+    command: ["bench", "worker", "--queue", "short,default"]
+
+  scheduler:
+    <<: [*app, *after-config]
+    command: ["bench", "schedule"]
+
+  websocket:
+    <<: [*app, *after-config]
+    command: ["node", "/home/frappe/frappe-bench/apps/frappe/socketio.js"]
+
+  frontend:
+    <<: *app
+    command: ["nginx-entrypoint.sh"]
+    environment:
+      BACKEND: backend:8000
+      SOCKETIO: websocket:9000
+      FRAPPE_SITE_NAME_HEADER: $$host  # route each request to the site named by its Host header
+      UPSTREAM_REAL_IP_ADDRESS: 0.0.0.0/0
+      UPSTREAM_REAL_IP_HEADER: X-Forwarded-For
+      UPSTREAM_REAL_IP_RECURSIVE: "off"
+      PROXY_READ_TIMEOUT: 120
+      CLIENT_MAX_BODY_SIZE: 50m
+    networks:
+      frappe_network:
+        # Lets Caddy's TLS "ask" request reach the control site by name (Host-based routing).
+        aliases: ["${CONTROL_SITE}"]
+    depends_on: [backend, websocket]
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    networks: [frappe_network]
+    ports: ["80:80", "443:443"]
+    environment:
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL}
+      CONTROL_SITE: ${CONTROL_SITE}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on: [frontend]
+
+  db:
+    image: mariadb:11.8
+    restart: unless-stopped
+    networks: [frappe_network]
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - db-data:/var/lib/mysql
+
+  redis-cache:
+    image: redis:7-alpine
+    restart: unless-stopped
+    networks: [frappe_network]
+
+  redis-queue:
+    image: redis:7-alpine
+    restart: unless-stopped
+    networks: [frappe_network]
+    volumes:
+      - redis-queue-data:/data
+
+volumes:
+  db-data:
+  redis-queue-data:
+  sites:
+  logs:
+  caddy-data:
+
+networks:
+  frappe_network:

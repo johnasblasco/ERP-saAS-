@@ -3,6 +3,7 @@
 import frappe
 
 from saas_control.bench import runner
+from saas_control.utils import cli_kwargs
 
 
 def register_existing_site(site_name: str, url: str, plan: str = "Developer"):
@@ -44,7 +45,7 @@ def register_existing_site(site_name: str, url: str, plan: str = "Developer"):
 		"execute",
 		"saas_tenant.setup.set_subscription",
 		"--kwargs",
-		frappe.as_json({"plan_name": plan, "status": "Active"}),
+		cli_kwargs({"plan_name": plan, "status": "Active"}),
 	)
 	frappe.db.commit()
 	return tenant.name

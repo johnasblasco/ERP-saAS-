@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ERPNEXT_IMAGE: frappe/erpnext:v16.50.0
+
+jobs:
+  lint-and-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Ruff
+        run: |
+          uvx ruff check apps
+          uvx ruff format --check apps
+      - name: Shell scripts parse
+        run: for f in scripts/*.sh; do bash -n "$f"; done
+      - name: Unit tests (no bench)
+        run: |
+          for app in erp_social saas_control; do
+            (cd "apps/$app" && uv run --no-project --python 3.14 --with pytest --with requests python -m pytest -q tests)
+          done
+
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MARIADB_ROOT_PASSWORD: "123"
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Allow the container user to read the checkout
+        run: chmod -R a+rX .
+      - name: Frappe integration tests (ERPNext v16)
+        run: |
+          docker run --rm --network host -v "$PWD":/workspace \
+            -e DB_HOST=127.0.0.1 -e DB_ROOT_PASSWORD=123 \
+            -e REDIS_CACHE=redis://127.0.0.1:6379 -e REDIS_QUEUE=redis://127.0.0.1:6379 \
+            "$ERPNEXT_IMAGE" bash /workspace/scripts/ci-test.sh
+
+  image:
+    runs-on: ubuntu-latest
+    needs: [lint-and-unit]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build production image
+        run: docker build -f deploy/Containerfile --build-arg ERPNEXT_IMAGE="$ERPNEXT_IMAGE" -t erp-saas:ci .
+      - name: Apps import inside the image
+        run: docker run --rm --entrypoint bash erp-saas:ci -c "cd /home/frappe/frappe-bench && ./env/bin/python -c 'import erp_social, saas_tenant, saas_control'"

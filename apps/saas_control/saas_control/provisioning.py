@@ -1,13 +1,11 @@
 """Create a tenant site on this bench: new-site, install apps, register with the control plane."""
 
-import json
-
 import frappe
 from frappe import _
 from frappe.utils import add_days, get_url, now_datetime, nowdate
 
 from saas_control.bench import BenchCommandError, runner
-from saas_control.utils import parse_execute_output
+from saas_control.utils import cli_kwargs, parse_execute_output
 
 TENANT = "Tenant"
 
@@ -75,7 +73,7 @@ def provision_tenant(tenant_name: str):
 				**subscription_payload(tenant),
 			}
 			output = bench.run(
-				"--site", site, "execute", "saas_tenant.setup.initialize", "--kwargs", json.dumps(kwargs)
+				"--site", site, "execute", "saas_tenant.setup.initialize", "--kwargs", cli_kwargs(kwargs)
 			)
 			setup_link = (parse_execute_output(output) or {}).get("setup_link")
 	except (BenchCommandError, frappe.ValidationError) as e:
@@ -168,7 +166,7 @@ def resend_setup_link(tenant_name: str):
 	}
 	bench = runner()
 	output = bench.run(
-		"--site", tenant.site_name, "execute", "saas_tenant.setup.initialize", "--kwargs", json.dumps(kwargs)
+		"--site", tenant.site_name, "execute", "saas_tenant.setup.initialize", "--kwargs", cli_kwargs(kwargs)
 	)
 	if send_ready_email(tenant, (parse_execute_output(output) or {}).get("setup_link")):
 		tenant.db_set("error", None)

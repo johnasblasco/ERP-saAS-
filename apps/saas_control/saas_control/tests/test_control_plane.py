@@ -1,3 +1,4 @@
+import ast
 import hashlib
 import hmac
 import json
@@ -185,7 +186,7 @@ class TestProvisioning(ControlTestCase):
 		self.assertEqual(configs["host_name"], "https://acme.example.test")
 		self.assertEqual(configs["saas_tenant_key"], doc.get_password("tenant_key"))
 		initialize = next(c for c in fake.commands if "execute" in c)
-		self.assertEqual(json.loads(initialize[-1])["owner_email"], "owner@acme.test")
+		self.assertEqual(ast.literal_eval(initialize[-1])["owner_email"], "owner@acme.test")
 		self.assertEqual(
 			sendmail.call_args.kwargs["args"]["setup_link"],
 			"https://acme.example.test/update-password?key=abc",
@@ -399,6 +400,17 @@ class TestRoutesRouterRelay(ControlTestCase):
 			router.forward_delivery("alpha", "{}", "sha256=x")
 		self.assertEqual(post.call_count, len(router.RETRY_DELAYS))
 		log.assert_called_once()
+
+	def test_tls_ask_allows_only_live_sites(self):
+		from saas_control.api import tls
+
+		tenant("alpha")
+		tenant("gone", status="Archived")
+		self.assertEqual(tls.allowed("alpha.example.test").status_code, 200)
+		self.assertEqual(tls.allowed(frappe.local.site).status_code, 200)
+		self.assertEqual(tls.allowed("gone.example.test").status_code, 404)
+		self.assertEqual(tls.allowed("evil.example.com").status_code, 404)
+		self.assertEqual(tls.allowed("").status_code, 404)
 
 	def test_oauth_relay_only_to_live_tenants(self):
 		tenant("alpha")

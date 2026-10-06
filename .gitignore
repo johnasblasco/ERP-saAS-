@@ -16,3 +16,6 @@ node_modules/
 
 # Local redis-server snapshots
 dump.rdb
+
+# Production secrets
+deploy/.env
