@@ -1,0 +1,9 @@
+<p>{{ _("Hi {0},").format(admin_name|e) }}</p>
+<p>{{ _("Your {0} workspace is ready at {1}.").format(company_name|e, '<a href="' + site_url + '">' + site_url + '</a>') }}</p>
+{% if setup_link %}
+<p><a href="{{ setup_link }}" class="btn btn-primary">{{ _("Set your password") }}</a></p>
+{% endif %}
+<p>{{ _("When you first sign in, a short setup asks for your company details, currency and fiscal year.") }}</p>
+{% if trial_ends_on %}
+<p style="color: #6b7280; font-size: 13px">{{ _("Your free trial runs until {0}.").format(trial_ends_on) }}</p>
+{% endif %}

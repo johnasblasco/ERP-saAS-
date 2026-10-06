@@ -1,0 +1,79 @@
+{
+ "actions": [],
+ "creation": "2026-10-06 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "plan_name",
+  "status",
+  "trial_ends_on",
+  "cb_main",
+  "max_users",
+  "support_email",
+  "updated_on"
+ ],
+ "fields": [
+  {
+   "fieldname": "plan_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Plan",
+   "read_only": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nTrial\nActive\nPast Due\nSuspended",
+   "read_only": 1
+  },
+  {
+   "fieldname": "trial_ends_on",
+   "fieldtype": "Date",
+   "label": "Trial Ends On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "0 = unlimited",
+   "fieldname": "max_users",
+   "fieldtype": "Int",
+   "label": "Max Users",
+   "read_only": 1
+  },
+  {
+   "fieldname": "support_email",
+   "fieldtype": "Data",
+   "label": "Support Email",
+   "options": "Email",
+   "read_only": 1
+  },
+  {
+   "fieldname": "updated_on",
+   "fieldtype": "Datetime",
+   "label": "Last Updated",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-10-06 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "SaaS Tenant",
+ "name": "SaaS Subscription",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

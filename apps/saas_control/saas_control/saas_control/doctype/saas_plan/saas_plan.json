@@ -1,0 +1,125 @@
+{
+ "actions": [],
+ "autoname": "field:plan_name",
+ "creation": "2026-10-06 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "plan_name",
+  "price",
+  "currency",
+  "billing_interval",
+  "cb_main",
+  "max_users",
+  "is_public",
+  "sort_order",
+  "subscription_plan",
+  "details_section",
+  "tagline",
+  "features"
+ ],
+ "fields": [
+  {
+   "fieldname": "plan_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Plan Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "price",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Price",
+   "options": "currency"
+  },
+  {
+   "default": "USD",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "default": "Month",
+   "fieldname": "billing_interval",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Billing Interval",
+   "options": "Month\nYear"
+  },
+  {
+   "fieldname": "cb_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "0 = unlimited",
+   "fieldname": "max_users",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Max Users"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_public",
+   "fieldtype": "Check",
+   "label": "Show on Signup Page"
+  },
+  {
+   "fieldname": "sort_order",
+   "fieldtype": "Int",
+   "label": "Sort Order"
+  },
+  {
+   "fieldname": "subscription_plan",
+   "fieldtype": "Link",
+   "label": "ERPNext Subscription Plan",
+   "options": "Subscription Plan",
+   "read_only": 1
+  },
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "tagline",
+   "fieldtype": "Data",
+   "label": "Tagline"
+  },
+  {
+   "description": "One per line, shown on the signup page.",
+   "fieldname": "features",
+   "fieldtype": "Small Text",
+   "label": "Features"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-10-06 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "SaaS Control",
+ "name": "SaaS Plan",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "plan_name"
+}

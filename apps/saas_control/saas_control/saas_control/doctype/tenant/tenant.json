@@ -1,0 +1,297 @@
+{
+ "actions": [],
+ "autoname": "field:subdomain",
+ "creation": "2026-10-06 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "subdomain",
+  "site_name",
+  "site_url",
+  "company_name",
+  "cb_main",
+  "status",
+  "plan",
+  "trial_ends_on",
+  "suspension_reason",
+  "owner_section",
+  "admin_name",
+  "cb_owner",
+  "admin_email",
+  "billing_section",
+  "customer",
+  "cb_billing",
+  "subscription",
+  "usage_section",
+  "active_users",
+  "db_size_mb",
+  "cb_usage",
+  "last_login",
+  "last_usage_sync",
+  "system_section",
+  "provisioned_on",
+  "tenant_key",
+  "verification_token",
+  "cb_system",
+  "error",
+  "provisioning_log"
+ ],
+ "fields": [
+  {
+   "fieldname": "subdomain",
+   "fieldtype": "Data",
+   "label": "Subdomain",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "site_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Site",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "site_url",
+   "fieldtype": "Data",
+   "label": "URL",
+   "options": "URL",
+   "read_only": 1
+  },
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Pending Verification",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Pending Verification\nQueued\nProvisioning\nTrial\nActive\nPast Due\nSuspended\nFailed\nArchived",
+   "read_only": 1
+  },
+  {
+   "fieldname": "plan",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Plan",
+   "options": "SaaS Plan",
+   "reqd": 1
+  },
+  {
+   "fieldname": "trial_ends_on",
+   "fieldtype": "Date",
+   "label": "Trial Ends On"
+  },
+  {
+   "depends_on": "eval:doc.status == 'Suspended'",
+   "fieldname": "suspension_reason",
+   "fieldtype": "Select",
+   "label": "Suspension Reason",
+   "options": "\nBilling\nManual",
+   "read_only": 1
+  },
+  {
+   "fieldname": "owner_section",
+   "fieldtype": "Section Break",
+   "label": "Owner"
+  },
+  {
+   "fieldname": "admin_name",
+   "fieldtype": "Data",
+   "label": "Owner Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_owner",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "admin_email",
+   "fieldtype": "Data",
+   "label": "Owner Email",
+   "options": "Email",
+   "reqd": 1
+  },
+  {
+   "fieldname": "billing_section",
+   "fieldtype": "Section Break",
+   "label": "Billing"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_billing",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "subscription",
+   "fieldtype": "Link",
+   "label": "Subscription",
+   "options": "Subscription",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "usage_section",
+   "fieldtype": "Section Break",
+   "label": "Usage"
+  },
+  {
+   "fieldname": "active_users",
+   "fieldtype": "Int",
+   "label": "Active Users",
+   "read_only": 1
+  },
+  {
+   "fieldname": "db_size_mb",
+   "fieldtype": "Float",
+   "label": "Database Size (MB)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_usage",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_login",
+   "fieldtype": "Datetime",
+   "label": "Last Login",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_usage_sync",
+   "fieldtype": "Datetime",
+   "label": "Usage Synced On",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "system_section",
+   "fieldtype": "Section Break",
+   "label": "System"
+  },
+  {
+   "fieldname": "provisioned_on",
+   "fieldtype": "Datetime",
+   "label": "Provisioned On",
+   "read_only": 1
+  },
+  {
+   "description": "Shared secret between this control plane and the tenant site.",
+   "fieldname": "tenant_key",
+   "fieldtype": "Password",
+   "label": "Tenant Key",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verification_token",
+   "fieldtype": "Password",
+   "hidden": 1,
+   "label": "Verification Token",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_system",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "error",
+   "fieldname": "error",
+   "fieldtype": "Long Text",
+   "label": "Last Error",
+   "read_only": 1
+  },
+  {
+   "fieldname": "provisioning_log",
+   "fieldtype": "Code",
+   "label": "Provisioning Log",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [
+  {
+   "link_doctype": "Tenant Social Route",
+   "link_fieldname": "tenant"
+  }
+ ],
+ "modified": "2026-10-06 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "SaaS Control",
+ "name": "Tenant",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "company_name,admin_email,site_name",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Gray",
+   "title": "Pending Verification"
+  },
+  {
+   "color": "Blue",
+   "title": "Queued"
+  },
+  {
+   "color": "Blue",
+   "title": "Provisioning"
+  },
+  {
+   "color": "Cyan",
+   "title": "Trial"
+  },
+  {
+   "color": "Green",
+   "title": "Active"
+  },
+  {
+   "color": "Orange",
+   "title": "Past Due"
+  },
+  {
+   "color": "Red",
+   "title": "Suspended"
+  },
+  {
+   "color": "Red",
+   "title": "Failed"
+  },
+  {
+   "color": "Gray",
+   "title": "Archived"
+  }
+ ],
+ "title_field": "company_name"
+}

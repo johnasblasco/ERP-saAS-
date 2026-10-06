@@ -1,0 +1,178 @@
+{
+ "actions": [],
+ "creation": "2026-10-06 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "sites_section",
+  "root_domain",
+  "url_scheme",
+  "public_port",
+  "cb_sites",
+  "apps_to_install",
+  "bench_path",
+  "db_user_host_scope",
+  "signup_section",
+  "allow_signups",
+  "require_email_verification",
+  "default_plan",
+  "cb_signup",
+  "trial_days",
+  "reserved_subdomains",
+  "support_email",
+  "billing_section",
+  "billing_company",
+  "billing_item",
+  "cb_billing",
+  "days_until_due"
+ ],
+ "fields": [
+  {
+   "fieldname": "sites_section",
+   "fieldtype": "Section Break",
+   "label": "Tenant Sites"
+  },
+  {
+   "default": "localhost",
+   "description": "Tenants get <subdomain>.<root domain>. Point a wildcard DNS record (*.example.com) at the bench.",
+   "fieldname": "root_domain",
+   "fieldtype": "Data",
+   "label": "Root Domain",
+   "reqd": 1
+  },
+  {
+   "default": "https",
+   "fieldname": "url_scheme",
+   "fieldtype": "Select",
+   "label": "URL Scheme",
+   "options": "https\nhttp"
+  },
+  {
+   "description": "Only for development, e.g. 8000. Leave 0 for 80/443.",
+   "fieldname": "public_port",
+   "fieldtype": "Int",
+   "label": "Public Port"
+  },
+  {
+   "fieldname": "cb_sites",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "erpnext\nerp_social\nsaas_tenant",
+   "description": "One app per line, installed on every new tenant site in this order.",
+   "fieldname": "apps_to_install",
+   "fieldtype": "Small Text",
+   "label": "Apps to Install"
+  },
+  {
+   "description": "Leave blank to use the bench this site runs on.",
+   "fieldname": "bench_path",
+   "fieldtype": "Data",
+   "label": "Bench Path"
+  },
+  {
+   "default": "%",
+   "description": "Passed to bench new-site --mariadb-user-host-login-scope. % when MariaDB runs in another container.",
+   "fieldname": "db_user_host_scope",
+   "fieldtype": "Data",
+   "label": "DB User Host Scope"
+  },
+  {
+   "fieldname": "signup_section",
+   "fieldtype": "Section Break",
+   "label": "Signups & Trials"
+  },
+  {
+   "default": "1",
+   "fieldname": "allow_signups",
+   "fieldtype": "Check",
+   "label": "Allow Public Signups"
+  },
+  {
+   "default": "1",
+   "fieldname": "require_email_verification",
+   "fieldtype": "Check",
+   "label": "Require Email Verification"
+  },
+  {
+   "fieldname": "default_plan",
+   "fieldtype": "Link",
+   "label": "Default Plan",
+   "options": "SaaS Plan"
+  },
+  {
+   "fieldname": "cb_signup",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "14",
+   "fieldname": "trial_days",
+   "fieldtype": "Int",
+   "label": "Trial Days"
+  },
+  {
+   "default": "www\napi\nadmin\napp\nmail\ncontrol\nstatus\nhelp\nsupport\nbilling",
+   "fieldname": "reserved_subdomains",
+   "fieldtype": "Small Text",
+   "label": "Reserved Subdomains"
+  },
+  {
+   "fieldname": "support_email",
+   "fieldtype": "Data",
+   "label": "Support Email",
+   "options": "Email"
+  },
+  {
+   "fieldname": "billing_section",
+   "fieldtype": "Section Break",
+   "label": "Billing"
+  },
+  {
+   "description": "Company that issues subscription invoices.",
+   "fieldname": "billing_company",
+   "fieldtype": "Link",
+   "label": "Billing Company",
+   "options": "Company"
+  },
+  {
+   "description": "Created automatically if blank.",
+   "fieldname": "billing_item",
+   "fieldtype": "Link",
+   "label": "Subscription Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "cb_billing",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "7",
+   "fieldname": "days_until_due",
+   "fieldtype": "Int",
+   "label": "Invoice Due In (days)"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-10-06 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "SaaS Control",
+ "name": "SaaS Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
